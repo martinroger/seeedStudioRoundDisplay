@@ -13,22 +13,21 @@ TFT_eSprite ringSpr = TFT_eSprite(&tft);
 TFT_eSprite background = TFT_eSprite(&tft);
 
 void setup() {
-  // put your setup code here, to run once:
+
   disp_init();
   touch_init();
   Serial.begin(115200);
-  ringSpr.createSprite(120,120);
+
+  ringSpr.createSprite(240,240);
   background.createSprite(240,240);
   background.fillSprite(TFT_WHITE);
-  //ringSpr.drawRect(0,0,120,120,TFT_RED);
-  ringSpr.drawSmoothArc(60,60,55,45,45,315,TFT_RED,TFT_RED,true);
-  ringSpr.pushSprite(60,60,TFT_BLACK);
-  tft.setPivot(120,120);
+  ringSpr.drawSmoothArc(120,120,120,100,45,315,TFT_RED,TFT_RED,true);
+  ringSpr.pushSprite(120,120,TFT_BLACK);
+  
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //Serial.println(analogRead(A0));
+
   if(chsc6x_is_pressed())
   {
     chsc6x_get_xy(&touchX,&touchY);
@@ -45,7 +44,9 @@ void loop() {
     //tft.drawCircle(touchX,touchY,10,TFT_BLACK);
     //tft.drawCircle(120,120,map(analogRead(A0),0,4096,20,40),TFT_RED);
     background.fillSprite(TFT_WHITE);
-    ringSpr.pushRotated(&background,angle,TFT_BLACK);
+    ringSpr.fillSprite(TFT_BLACK);
+    ringSpr.drawSmoothArc(120,120,119,80,(angle+45)%360,(angle+315)%360,TFT_RED,TFT_RED,true);
+    ringSpr.pushToSprite(&background,0,0,TFT_BLACK);
     background.pushSprite(0,0);  
     delay(5);
 
@@ -55,11 +56,14 @@ void loop() {
     background.fillSprite(TFT_WHITE);
     ringSpr.pushRotated(&background,angle,TFT_BLACK);
     background.pushSprite(0,0);
-    angle++;
-    if(angle==360) angle=0;
+    //angle++;
+    //angle = angle%360;
+    Serial.print(">A0:");
+    Serial.println(analogRead(A0));
+    angle = map(analogRead(A0),0,4095,1,360);
     //tft.fillScreen(TFT_WHITE);
   }
-  delay(1);
+  delay(10);
 
 
 }
